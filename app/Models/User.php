@@ -64,6 +64,11 @@ class User extends Authenticatable
         ];
     }
 
+    public function submissions()
+    {
+        return $this->hasMany(Submission::class);
+    }
+
     public function seasonsAsAdmin()
     {
         return $this->hasMany(Season::class);
@@ -89,8 +94,25 @@ class User extends Authenticatable
         return $this->hasMany(Score::class);
     }
 
+    public function roundWins()
+    {
+        return $this->hasMany(Round::class);
+    }
+
     public function scoresForRound(int $roundId)
     {
         return $this->scores;
+    }
+
+    public function calculateScoreForSeason(int $seasonId)
+    {
+        return $this->submissions()->whereHas('round', function ($query) use ($seasonId) {
+            $query->where('season_id', $seasonId);
+        })->sum('calculated_score');
+    }
+
+    public function calculateHowManyWinsForSeason(int $seasonId)
+    {
+        return $this->roundWins()->where('season_id', $seasonId)->count();
     }
 }

@@ -20,6 +20,7 @@ Route::middleware([
     Route::post('/season/store', [SeasonController::class, 'store'])->name('season.store');
     Route::get('/season/create', [SeasonController::class, 'create'])->name('season.create');
     Route::post('/season/destroy/{seasonId}', [SeasonController::class, 'destroy'])->name('season.destroy');
+    Route::get('/season/{seasonId}/leaderboard', [SeasonController::class, 'leaderboard'])->name('season.leaderboard');
     Route::post('/season/{seasonId}/round/store', [RoundController::class, 'store'])->name('round.store');
     Route::post('/season/{seasonId}/round/{roundId}/delete', [RoundController::class, 'destroy'])->name('round.destroy');
     Route::post('/season/{seasonId}/round/{roundId}/scores', [RoundController::class, 'submitScores'])->name('round.submit-scores');

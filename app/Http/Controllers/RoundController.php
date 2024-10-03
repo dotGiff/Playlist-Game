@@ -94,8 +94,7 @@ class RoundController extends Controller
     public function close(int $seasonId, int $roundId)
     {
         $round = Round::find($roundId);
-        $round->closed_at = now();
-        $round->save();
+        $round->close();
 
         return redirect()->route('round', ['seasonId' => $seasonId, 'roundId' => $roundId]);
     }

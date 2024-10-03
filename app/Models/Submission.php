@@ -42,4 +42,10 @@ class Submission extends Model
         return $this->round->season->participants->count() ==
             $this->scores->count();
     }
+
+    public function calculateScore(int $roundId)
+    {
+        $this->calculated_score = $this->totalScoreForRound($roundId);
+        $this->save();
+    }
 }

@@ -16,9 +16,13 @@ class SeasonController extends Controller
      */
     public function create()
     {
+        $user = User::find(Auth::id());
+        if (!$user->isAdmin()) {
+            return back();
+        }
         return view('season.create', [
             'users' => User::all(),
-            'user' => User::find(Auth::id())
+            'user' => $user
         ]);
     }
 
@@ -48,6 +52,22 @@ class SeasonController extends Controller
         return view('season.show', [
             'season' => $season,
             'rounds' => $season->rounds()->with('submissions')->get()
+        ]);
+    }
+
+    public function leaderboard(int $seasonId)
+    {
+        $season = Season::findOrFail($seasonId);
+
+        return view('season.leaderboard', [
+            'season' => $season,
+            'users' => $season->participants->each(function (User $user) use ($season) {
+                $user->seasonScore = $user->calculateScoreForSeason($season->id);
+                $user->wins = $user->calculateHowManyWinsForSeason($season->id);
+            })->sortByDesc([
+                ['wins', 'desc'],
+                ['seasonScore', 'desc'],
+            ])
         ]);
     }
 

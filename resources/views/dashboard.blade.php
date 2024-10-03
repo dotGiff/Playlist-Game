@@ -6,7 +6,7 @@
     </x-slot>
 
     @if($user->isAdmin())
-        <div class="py-12 pb-0">
+        <div class="py-12 pb-0 admin-eyes-only">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 flex flex-wrap mb-4">
                 <div class="flex items-center py-2">
                     <a type="button" href="{{ route('season.create') }}" class="inline-block shadow bg-blue-500 hover:bg-blue-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded">

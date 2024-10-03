@@ -32,6 +32,16 @@ class Round extends Model
         return $this->belongsTo(Season::class);
     }
 
+    public function winner()
+    {
+        $participants = $this->season->participants;
+        foreach ($participants as $participant) {
+            $participant->roundTotal = $this->calculateScore($participant);
+        }
+
+        return $participants->sortByDesc('roundTotal')->first();
+    }
+
     public function allSubmissionScoresAreIn()
     {
         if ($this->submissions->count() == 0) {
@@ -91,16 +101,26 @@ class Round extends Model
             ->keyBy('submission_id');
     }
 
+    public function close()
+    {
+        $this->closed_at = now();
+        $submissions = $this->calculateScores();
+        $this->user_id = $submissions->sortByDesc('calculated_score')->first()->user_id;
+        $this->save();
+    }
+
     public function calculateScores()
     {
-        foreach ($this->season->participants as $participant) {
-            $this->calculateScore($participant);
+        foreach ($this->submissions as $submission) {
+            $submission->calculateScore($this->id);
         }
+
+        return $this->submissions;
     }
 
     public function calculateScore(User $user)
     {
-        return $this->where('user_id', $user->id)->sum('score');
+        return $this->scores->where('submissions.user_id', $user->id)->sum('score');
     }
 
     public function totalScoresForRound()

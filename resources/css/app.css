@@ -5,3 +5,7 @@
 [x-cloak] {
     display: none;
 }
+
+.admin-eyes-only {
+    background-color: #FED7D7;
+}
